@@ -1,0 +1,6 @@
+@DotKeeps.Server_HostAddress = http://localhost:5052
+
+GET {{DotKeeps.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
