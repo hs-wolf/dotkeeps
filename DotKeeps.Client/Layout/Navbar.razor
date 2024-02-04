@@ -1,0 +1,61 @@
+﻿<nav>
+    <div class="navbar-header">
+        <a href="">
+            <SvgIcon Data="@IconsData.MedievalCastle" Size="1.5f" />
+            <p>DotKeeps</p>
+        </a>
+        <button @onclick="ToggleNavMenu" style="@NavbarHeaderButtonStyle">
+            <SvgIcon Data="@IconsData.HamburguerMenu" Size="1.5f" />
+        </button>
+    </div>
+
+    @if (!collapseNavMenu)
+    {
+        <div class="navbar-menu" @onclick="ToggleNavMenu">
+            @foreach (var Tab in Tabs)
+            {
+                <NavLink href="@Tab.name" Match="NavLinkMatch.All">
+                    <p>@Tab.label</p>
+                </NavLink>
+            }
+        </div>
+    }
+
+    <div class="navbar-menu-desktop" @onclick="ToggleNavMenu">
+        @foreach (var Tab in Tabs)
+        {
+            <NavLink href="@Tab.name" Match="NavLinkMatch.All">
+                <p>@Tab.label</p>
+            </NavLink>
+        }
+    </div>
+</nav>
+
+@code {
+
+    private class NavMenuTab
+    {
+        public string name { get; private set; } = String.Empty;
+        public string label { get; private set; } = String.Empty;
+
+        public NavMenuTab(string name, string label)
+        {
+            this.name = name;
+            this.label = label;
+        }
+    }
+
+    private NavMenuTab[] Tabs = [new NavMenuTab("", "Home"),
+new NavMenuTab("watchlist", "Watchlist"),
+new NavMenuTab("following", "Following"),
+new NavMenuTab("settings", "Settings")];
+
+    private bool collapseNavMenu = true;
+
+    private string? NavbarHeaderButtonStyle => collapseNavMenu ? null : "transform: rotate(90deg)";
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

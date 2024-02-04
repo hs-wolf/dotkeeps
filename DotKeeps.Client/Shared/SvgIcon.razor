@@ -1,0 +1,28 @@
+@using System;
+@using System.Text.RegularExpressions;
+
+@if (Data != String.Empty)
+{
+    @(new MarkupString(FinalData))
+}
+
+@code {
+    [Parameter] public string Data { get; set; } = String.Empty;
+    [Parameter] public float Size { get; set; } = 1;
+
+    private string FinalData => ReplaceAttribute(Data);
+
+    string ReplaceAttribute(string input)
+    {
+        string widthPattern = @"width=""1em""";
+        string heightPattern = @"height=""1em""";
+        string widthReplacement = "width=\"" + Size.ToString().Replace(",", ".") + "em\"";
+        string heightReplacement = "height=\"" + Size.ToString().Replace(",", ".") + "em\"";
+        Regex regexWidth = new Regex(widthPattern);
+        Regex regexHeight = new Regex(heightPattern);
+        string result = input;
+        result = regexWidth.Replace(result, widthReplacement);
+        result = regexHeight.Replace(result, heightReplacement);
+        return result;
+    }
+}
