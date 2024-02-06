@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "tailwind": "npx tailwindcss -i ./wwwroot/css/tailwind.css -o ./wwwroot/css/generated.css --watch" 
+  }
+}

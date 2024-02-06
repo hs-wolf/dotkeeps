@@ -1,28 +1,23 @@
-@using System;
-@using System.Text.RegularExpressions;
-
-@if (Data != String.Empty)
+@if (!String.IsNullOrEmpty(Data))
 {
-    @(new MarkupString(FinalData))
+    <span class="@("flex " + AdditionalClasses)" @attributes="RemainingAttributes">@(new MarkupString(Data))</span>
 }
 
 @code {
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IDictionary<string, object>? AdditionalAttributes { get; set; }
     [Parameter] public string Data { get; set; } = String.Empty;
-    [Parameter] public float Size { get; set; } = 1;
 
-    private string FinalData => ReplaceAttribute(Data);
+    private string? AdditionalClasses;
+    private IDictionary<string, object>? RemainingAttributes;
 
-    string ReplaceAttribute(string input)
+    protected override void OnInitialized()
     {
-        string widthPattern = @"width=""1em""";
-        string heightPattern = @"height=""1em""";
-        string widthReplacement = "width=\"" + Size.ToString().Replace(",", ".") + "em\"";
-        string heightReplacement = "height=\"" + Size.ToString().Replace(",", ".") + "em\"";
-        Regex regexWidth = new Regex(widthPattern);
-        Regex regexHeight = new Regex(heightPattern);
-        string result = input;
-        result = regexWidth.Replace(result, widthReplacement);
-        result = regexHeight.Replace(result, heightReplacement);
-        return result;
+        if (AdditionalAttributes != null)
+        {
+            AdditionalClasses = AdditionalAttributes["class"].ToString();
+            RemainingAttributes = AdditionalAttributes;
+            RemainingAttributes.Remove("class");
+        }
     }
 }

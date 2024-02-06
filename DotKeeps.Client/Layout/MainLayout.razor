@@ -1,8 +1,8 @@
 ﻿@inherits LayoutComponentBase
 
-<div id="main-layout">
+<div class="relative flex flex-col md:flex-row h-full">
     <Navbar />
-    <main>
+    <main class="relative flex flex-col md:w-full h-full overflow-auto">
         @Body
     </main>
 </div>

@@ -1,7 +1,23 @@
-﻿@page "/"
+﻿@using DotKeeps.Shared
+@page "/"
 
 <PageTitle>DotKeeps Home</PageTitle>
 
-<div style="padding: 12px">
+<div style="padding: 0.75rem">
   <h1>Home</h1>
 </div>
+
+<ul class="flex flex-col gap-3 p-3 md:p-6">
+  @foreach (var Item in KeepItems)
+  {
+    <KeepItemMenu Item="Item" />
+  }
+</ul>
+
+@code {
+  KeepItem[] KeepItems = [
+  new("0", KeepItemType.MOVIE, "Testing 1, Testing 1, Testing 1, Testing 1, Testing 1, Testing 1, Testing 1, Testing 1, Testing 1, Testing 1, Testing 1", new KeepItemData(String.Empty, String.Empty, String.Empty, String.Empty), DateTime.Now, DateTime.Now),
+new("1", KeepItemType.ANIME, "Testing 2", new KeepItemData(String.Empty, String.Empty, String.Empty, String.Empty), DateTime.Now, DateTime.Now),
+new("2", KeepItemType.MANHWA, "Testing 3", new KeepItemData(String.Empty, String.Empty, String.Empty, String.Empty), DateTime.Now, DateTime.Now),
+];
+}
