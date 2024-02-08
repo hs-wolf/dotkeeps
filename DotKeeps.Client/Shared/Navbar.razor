@@ -8,7 +8,6 @@
             <SvgIcon Data="@IconsData.HamburguerMenu" class="text-2xl" />
         </button>
     </div>
-
     @if (!collapseNavMenu)
     {
         <div class="z-40 absolute md:hidden flex flex-col gap-3 w-full mt-12 px-3 pb-3 bg-black text-white text-lg"
@@ -21,7 +20,6 @@
             }
         </div>
     }
-
     <div class="hidden md:flex flex-col gap-6 h-full px-6 bg-black text-xl text-white overflow-auto"
         @onclick="ToggleNavMenu">
         @foreach (var Tab in Tabs)

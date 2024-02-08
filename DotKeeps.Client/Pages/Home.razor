@@ -3,21 +3,60 @@
 
 <PageTitle>DotKeeps Home</PageTitle>
 
-<div style="padding: 0.75rem">
-  <h1>Home</h1>
+<div class="flex justify-between gap-3 md:gap-6 p-3 md:p-6">
+  <CustomButton Label="+ New Item" Theme="action" Action="CreateItem" />
+  <div class="hidden xl:grid grid-cols-2 items-center gap-2 md:gap-3">
+    <button @onclick="() => ChangeListDisplay(false)" class="@(ListDisplay ? "" : "text-blue-600")">
+      <SvgIcon Data="@IconsData.ItemsList" class="text-2xl" />
+    </button>
+    <button @onclick="() => ChangeListDisplay(true)" class="@(ListDisplay ? "text-blue-600" : "")">
+      <SvgIcon Data="@IconsData.ItemsGrid" class="text-2xl" />
+    </button>
+  </div>
 </div>
 
-<ul class="flex flex-col gap-3 p-3 md:p-6">
-  @foreach (var Item in KeepItems)
+<ul class="@(ListDisplay ? "grid xl:grid-cols-2" : "flex flex-col") gap-3 md:gap-4 p-3 md:p-6">
+  @foreach (var (item, index) in KeepItems.Select((value, i) => (value, i)))
   {
-    <KeepItemMenu Item="Item" />
+    <KeepItemMenu Item="item" Delete="() => DeleteItem(index)" />
   }
 </ul>
 
 @code {
-  KeepItem[] KeepItems = [
-  new("0", KeepItemType.MOVIE, "Testing 1, Testing 1, Testing 1, Testing 1, Testing 1, Testing 1, Testing 1, Testing 1, Testing 1, Testing 1, Testing 1", new KeepItemData(String.Empty, String.Empty, String.Empty, String.Empty), DateTime.Now, DateTime.Now),
-new("1", KeepItemType.ANIME, "Testing 2", new KeepItemData(String.Empty, String.Empty, String.Empty, String.Empty), DateTime.Now, DateTime.Now),
-new("2", KeepItemType.MANHWA, "Testing 3", new KeepItemData(String.Empty, String.Empty, String.Empty, String.Empty), DateTime.Now, DateTime.Now),
+  private List<KeepItem> KeepItems = [
+  new("0", KeepItemType.SERIE, "Testing 1", new KeepItemData("1", "22", String.Empty, String.Empty), String.Empty,
+DateTime.Now,
+DateTime.Now),
+new("1", KeepItemType.ANIME, "Testing 2", new KeepItemData(String.Empty, String.Empty, String.Empty,
+String.Empty),String.Empty,
+DateTime.Now, DateTime.Now),
+new("2", KeepItemType.MANHWA, "Testing 3", new KeepItemData(String.Empty, String.Empty, String.Empty,
+String.Empty),String.Empty,
+DateTime.Now, DateTime.Now),
 ];
+
+  private bool ListDisplay = false;
+
+  private void CreateItem()
+  {
+    KeepItems.Insert(0, new(
+    "0",
+    KeepItemType.NONE,
+    "Name",
+    new KeepItemData(String.Empty, String.Empty, String.Empty, String.Empty), String.Empty,
+    DateTime.Now,
+    DateTime.Now
+    ));
+  }
+
+
+  private void DeleteItem(int index)
+  {
+    KeepItems.RemoveAt(index);
+  }
+
+  private void ChangeListDisplay(bool value)
+  {
+    ListDisplay = value;
+  }
 }

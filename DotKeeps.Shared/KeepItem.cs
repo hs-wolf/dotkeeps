@@ -30,14 +30,16 @@ public class KeepItem(
   KeepItemType Type,
   string Name,
   KeepItemData Data,
+  string Link,
   DateTime CreationDate,
   DateTime LastUpdateDate
-    )
+  )
 {
   public string Id { get; private set; } = Id;
   public KeepItemType Type { get; set; } = Type;
   public string Name { get; set; } = Name;
   public KeepItemData Data { get; set; } = Data;
+  public string Link { get; set; } = Link;
   public DateTime CreationDate { get; private set; } = CreationDate;
   public DateTime LastUpdateDate { get; private set; } = LastUpdateDate;
 }

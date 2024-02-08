@@ -1,0 +1,17 @@
+<button
+  class="px-2 py-1.5 md:px-3 md:py-2 bg-gradient-to-b rounded-sm text-sm md:text-base font-medium cursor-pointer transition-transform active:scale-95 @CustomTheme"
+  @onclick="Action">
+  @Label
+</button>
+
+@code {
+  [Parameter] public string? Label { get; set; }
+  [Parameter] public string? Theme { get; set; }
+  [Parameter] public EventCallback Action { get; set; }
+
+  private string CustomTheme =>
+  Theme == "primary" ? "from-blue-600 to-blue-700 text-white" :
+  Theme == "secondary" ? "from-purple-600 to-purple-700 text-white" :
+  Theme == "action" ? "from-green-600 to-green-700 text-white" :
+  Theme == "danger" ? "from-red-600 to-red-700 text-white" : "from-neutral-200 to-neutral-300 text-black";
+}
