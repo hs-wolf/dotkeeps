@@ -12,24 +12,12 @@ public enum KeepItemType
   MANHWA
 }
 
-public class KeepItemData(
-  string Season,
-  string Episode,
-  string Volume,
-  string Chapter
-    )
-{
-  public string Season { get; set; } = Season;
-  public string Episode { get; set; } = Episode;
-  public string Volume { get; set; } = Volume;
-  public string Chapter { get; set; } = Chapter;
-}
+
 
 public class KeepItem(
   string Id,
   KeepItemType Type,
   string Name,
-  KeepItemData Data,
   string Link,
   DateTime CreationDate,
   DateTime LastUpdateDate
@@ -38,8 +26,15 @@ public class KeepItem(
   public string Id { get; private set; } = Id;
   public KeepItemType Type { get; set; } = Type;
   public string Name { get; set; } = Name;
-  public KeepItemData Data { get; set; } = Data;
   public string Link { get; set; } = Link;
-  public DateTime CreationDate { get; private set; } = CreationDate;
-  public DateTime LastUpdateDate { get; private set; } = LastUpdateDate;
+  public DateTime CreationDate { get; set; } = CreationDate;
+  public DateTime LastUpdateDate { get; set; } = LastUpdateDate;
+}
+
+public class KeepItemData
+{
+  public string Season { get; set; }
+  public string Episode { get; set; }
+  public string Volume { get; set; }
+  public string Chapter { get; set; }
 }
