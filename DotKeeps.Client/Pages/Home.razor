@@ -24,29 +24,17 @@
 
 @code {
   private List<KeepItem> KeepItems = [
-  new("0", KeepItemType.SERIE, "Testing 1", new KeepItemData("1", "22", String.Empty, String.Empty), String.Empty,
-DateTime.Now,
-DateTime.Now),
-new("1", KeepItemType.ANIME, "Testing 2", new KeepItemData(String.Empty, String.Empty, String.Empty,
-String.Empty),String.Empty,
-DateTime.Now, DateTime.Now),
-new("2", KeepItemType.MANHWA, "Testing 3", new KeepItemData(String.Empty, String.Empty, String.Empty,
-String.Empty),String.Empty,
-DateTime.Now, DateTime.Now),
+  KeepItem.New(KeepItemType.MOVIE, "Testing 1"),
+KeepItem.New(KeepItemType.SERIE, "Testing 2"),
+KeepItem.New(KeepItemType.MANGA, "Testing 3"),
+KeepItem.New(KeepItemType.COMIC, "Testing 4"),
 ];
 
   private bool ListDisplay = false;
 
   private void CreateItem()
   {
-    KeepItems.Insert(0, new(
-    "0",
-    KeepItemType.NONE,
-    "Name",
-    new KeepItemData(String.Empty, String.Empty, String.Empty, String.Empty), String.Empty,
-    DateTime.Now,
-    DateTime.Now
-    ));
+    KeepItems.Insert(0, KeepItem.New(KeepItemType.NONE, "New"));
   }
 
   private void DeleteItem(int index)
