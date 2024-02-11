@@ -1,49 +1,101 @@
 ﻿@using DotKeeps.Shared
+@using System.Text.Json
+@inject HttpClient HttpClient
 @page "/"
 
 <PageTitle>DotKeeps Home</PageTitle>
 
-<div class="flex justify-between gap-3 md:gap-6 p-3 md:p-6">
-  <CustomButton Label="+ New Item" Theme="action" Action="CreateItem" />
-  <div class="hidden xl:grid grid-cols-2 items-center gap-2 md:gap-3">
-    <button @onclick="() => ChangeListDisplay(false)" class="@(ListDisplay ? "" : "text-blue-600")">
-      <SvgIcon Data="@IconsData.ItemsList" class="text-2xl" />
-    </button>
-    <button @onclick="() => ChangeListDisplay(true)" class="@(ListDisplay ? "text-blue-600" : "")">
-      <SvgIcon Data="@IconsData.ItemsGrid" class="text-2xl" />
-    </button>
-  </div>
+<div class="flex flex-col gap-3 md:gap-6 p-3 md:p-6">
+  @if (LoadingItems)
+  {
+    <h1 class="p-2 md:p-3 bg-neutral-300 rounded-sm md:text-lg animate-pulse">Loading items...</h1>
+  }
+  else
+  {
+    <div class="flex justify-between gap-3 md:gap-6">
+      <CustomButton Label="+ New Item" Theme="action" Action="CreateItem" />
+      <div class="hidden xl:grid grid-cols-2 items-center gap-2 md:gap-3">
+        <button @onclick="() => ChangeListDisplay(false)" class="@(ListDisplay ? "" : "text-blue-600")">
+          <SvgIcon Data="@IconsData.ItemsList" class="text-2xl" />
+        </button>
+        <button @onclick="() => ChangeListDisplay(true)" class="@(ListDisplay ? "text-blue-600" : "")">
+          <SvgIcon Data="@IconsData.ItemsGrid" class="text-2xl" />
+        </button>
+      </div>
+    </div>
+
+    @if (KeepItems.Count <= 0)
+    {
+      <h1 class="md:text-lg">No Items yet.</h1>
+    }
+    else
+    {
+      <ul class="@(ListDisplay ? "grid xl:grid-cols-2" : "flex flex-col") gap-3 md:gap-4">
+        @foreach (var (item, index) in KeepItems.Select((value, i) => (value, i)))
+        {
+          <KeepItemMenu Item="item" Delete="() => DeleteItem(index)" Update="() => UpdateItem(index)" />
+        }
+      </ul>
+    }
+  }
 </div>
 
-<ul class="@(ListDisplay ? "grid xl:grid-cols-2" : "flex flex-col") gap-3 md:gap-4 p-3 md:p-6">
-  @foreach (var (item, index) in KeepItems.Select((value, i) => (value, i)))
-  {
-    <KeepItemMenu Item="item" Delete="() => DeleteItem(index)" />
-  }
-</ul>
-
 @code {
-  private List<KeepItem> KeepItems = [
-  KeepItem.New(KeepItemType.MOVIE, "Testing 1"),
-KeepItem.New(KeepItemType.SERIE, "Testing 2"),
-KeepItem.New(KeepItemType.MANGA, "Testing 3"),
-KeepItem.New(KeepItemType.COMIC, "Testing 4"),
-];
+  private List<KeepItem> KeepItems = [];
 
+  private bool LoadingItems = true;
   private bool ListDisplay = false;
 
-  private void CreateItem()
+  private async Task CreateItem()
   {
-    KeepItems.Insert(0, KeepItem.New(KeepItemType.NONE, "New"));
+    var data = KeepItem.New(KeepItemType.NONE, "New");
+
+    var response = await HttpClient.PostAsJsonAsync("http://192.168.15.7:5052/api/keep-items", data);
+
+    if (response.IsSuccessStatusCode)
+    {
+      var responseContent = await response.Content.ReadFromJsonAsync<KeepItem>();
+      if (responseContent != null)
+      {
+        KeepItems.Insert(0, responseContent);
+      }
+    }
   }
 
-  private void DeleteItem(int index)
+  private async Task UpdateItem(int index)
   {
-    KeepItems.RemoveAt(index);
+    var response = await
+    HttpClient.PutAsJsonAsync<KeepItem>($"http://192.168.15.7:5052/api/keep-items/{KeepItems[index].Id}", KeepItems[index]);
+  }
+
+  private async Task DeleteItem(int index)
+  {
+    var response = await HttpClient.DeleteAsync($"http://192.168.15.7:5052/api/keep-items/{KeepItems[index].Id}");
+    if (response.IsSuccessStatusCode)
+    {
+      KeepItems.RemoveAt(index);
+    }
   }
 
   private void ChangeListDisplay(bool value)
   {
     ListDisplay = value;
+  }
+
+  protected override async Task OnInitializedAsync()
+  {
+    try
+    {
+      LoadingItems = true;
+      var response = await HttpClient.GetFromJsonAsync<KeepItem[]>("http://192.168.15.7:5052/api/keep-items");
+      if (response != null)
+      {
+        KeepItems = response.ToList();
+      }
+    }
+    finally
+    {
+      LoadingItems = false;
+    }
   }
 }

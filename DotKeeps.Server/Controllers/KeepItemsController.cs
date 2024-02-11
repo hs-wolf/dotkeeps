@@ -70,7 +70,7 @@ public class KeepItemsController(AppDbContext context) : ControllerBase
   }
 
   [HttpDelete("{id}")]
-  public async Task<IActionResult> DeleteKeepItem(int id)
+  public async Task<IActionResult> DeleteKeepItem(string id)
   {
     var keepItem = await _context.KeepItems.FindAsync(id);
 

@@ -2,62 +2,68 @@
 
 @if (Item != null)
 {
-  <div class="flex flex-col bg-neutral-200 rounded-sm @(Deleting ? "pointer-events-none" : null)">
-  <button class="flex flex-col gap-1 md:gap-2 p-2 md:p-3" @onclick="ToggleShowMenu">
-    <div class="flex gap-1 md:gap-2">
-      @if (Item.Type != KeepItemType.NONE)
-        {
-          <p class=" px-1 text-xs md:text-sm bg-gradient-to-b from-blue-600 to-blue-700 text-white rounded-sm">
-            @(Formatters.CapitalizeFirstLetter(Item.Type.ToString() ?? ""))
-          </p>
-        }
+  <div class="flex flex-col @(Deleting ? "pointer-events-none" : null)">
+  @if (Item.Type != KeepItemType.NONE)
+    {
+      <div class="flex items-end gap-1 md:gap-1 break-all">
         @if (ShowFieldLink && !String.IsNullOrEmpty(Item?.Link))
         {
-          <p class=" px-1 text-xs md:text-sm bg-gradient-to-b from-green-600 to-green-700 text-white rounded-sm">
+          <a href="@Item.Link" target="_blank"
+            class="flex items-center py-2 px-3 text-xs md:text-sm bg-gradient-to-b from-blue-600 to-blue-700 text-white rounded-t-sm break-normal">
             Link
-          </p>
+          </a>
         }
-        @if (ShowFieldSeason && !String.IsNullOrEmpty(Item?.Data.Season))
-        {
-          <p class="px-1 text-xs md:text-sm bg-gradient-to-b from-purple-600 to-purple-700 text-white rounded-sm">
-            @("Season " + Item.Data.Season)
-          </p>
-        }
-        @if (ShowFieldEpisode && !String.IsNullOrEmpty(Item?.Data.Episode))
-        {
-          <p class="px-1 text-xs md:text-sm bg-gradient-to-b from-purple-600 to-purple-700 text-white rounded-sm">
-            @("Episode " + Item.Data.Episode)
-          </p>
-        }
-        @if (ShowFieldVolume && !String.IsNullOrEmpty(Item?.Data.Volume))
-        {
-          <p class="px-1 text-xs md:text-sm bg-gradient-to-b from-purple-600 to-purple-700 text-white rounded-sm">
-            @("Volume " + Item.Data.Volume)
-          </p>
-        }
-        @if (ShowFieldChapter && !String.IsNullOrEmpty(Item?.Data.Chapter))
-        {
-          <p class="px-1 text-xs md:text-sm bg-gradient-to-b from-purple-600 to-purple-700 text-white rounded-sm">
-            @("Chapter " + Item.Data.Chapter)
-          </p>
-        }
-      </div>
-      <div class="flex justify-between items-center gap-2 md:gap-3">
-        <p class="flex gap-2 md:text-lg text-start">
-          @Item?.Name
+        <p
+          class="flex items-center py-1 px-2 md:px-3 text-xs md:text-sm bg-gradient-to-b from-purple-600 to-purple-700 text-white rounded-t-sm break-normal">
+          @(Formatters.CapitalizeFirstLetter(Item.Type.ToString() ?? ""))
         </p>
-        <span class="self-start transition-transform @(ShowMenu ? "rotate-180" : null)">
-          <SvgIcon Data="@IconsData.ChevronDown" class="text-xl md:text-2xl" />
-        </span>
+        @if (ShowFieldSeason && !String.IsNullOrEmpty(Item?.Season))
+        {
+          <p
+            class="flex items-center py-1 px-2 md:px-3 text-xs md:text-sm bg-gradient-to-b from-purple-600 to-purple-700 text-white rounded-t-sm">
+            @("Season " + Item.Season)
+          </p>
+        }
+        @if (ShowFieldEpisode && !String.IsNullOrEmpty(Item?.Episode))
+        {
+          <p
+            class="flex items-center py-1 px-2 md:px-3 text-xs md:text-sm bg-gradient-to-b from-purple-600 to-purple-700 text-white rounded-t-sm">
+            @("Episode " + Item.Episode)
+          </p>
+        }
+        @if (ShowFieldVolume && !String.IsNullOrEmpty(Item?.Volume))
+        {
+          <p
+            class="flex items-center py-1 px-2 md:px-3 text-xs md:text-sm bg-gradient-to-b from-purple-600 to-purple-700 text-white rounded-t-sm">
+            @("Volume " + Item.Volume)
+          </p>
+        }
+        @if (ShowFieldChapter && !String.IsNullOrEmpty(Item?.Chapter))
+        {
+          <p
+            class="flex items-center py-1 px-2 md:px-3 text-xs md:text-sm bg-gradient-to-b from-purple-600 to-purple-700 text-white rounded-t-sm">
+            @("Chapter " + Item.Chapter)
+          </p>
+        }
       </div>
+    }
+    <button
+      class="flex justify-between items-center md:gap-2 p-2 md:p-3 bg-neutral-200 rounded-tr-sm @(ShowMenu ? "rounded-b-none" : "rounded-b-sm")"
+      @onclick="ToggleShowMenu">
+      <p class="flex gap-2 md:text-lg text-start">
+        @Item?.Name
+      </p>
+      <span class="self-start transition-transform @(ShowMenu ? "rotate-180" : null)">
+        <SvgIcon Data="@IconsData.ChevronDown" class="text-xl md:text-2xl" />
+      </span>
     </button>
     @if (ShowMenu)
     {
-      <div class="flex flex-col gap-2 px-2 pb-2 md:px-3 md:pb-3">
+      <div class="flex flex-col gap-2 p-2 md:p-3 bg-neutral-300 rounded-b-sm">
         @if (Editing)
         {
           <div class="flex flex-col md:flex-row md:items-center gap-2">
-            <InputSelect @bind-Value="Item.Type" class="w-full md:w-auto h-8 md:h-10 px-2 md:px-3 bg-neutral-300 rounded-sm">
+            <InputSelect @bind-Value="Item.Type" class="w-full md:w-auto h-8 md:h-10 px-2 md:px-3 bg-white rounded-sm">
               @foreach (KeepItemType Type in Enum.GetValues(typeof(KeepItemType)))
               {
                 <option value="@Type">@Formatters.CapitalizeFirstLetter(Type.ToString())</option>
@@ -72,30 +78,28 @@
               {
                 <div class="flex flex-col gap-1">
                   <label for="season" class="text-sm md:text-base">Season</label>
-                  <InputText @bind-Value="Item.Data.Season" name="season" class="custom-input md:max-w-32" placeholder="Season" />
+                  <InputText @bind-Value="Item.Season" name="season" class="custom-input md:max-w-32" placeholder="Season" />
                 </div>
               }
               @if (ShowFieldEpisode)
               {
                 <div class="flex flex-col gap-1">
                   <label for="episode" class="text-sm md:text-base">Episode</label>
-                  <InputText @bind-Value="Item.Data.Episode" name="episode" class="custom-input md:max-w-32"
-                    placeholder="Episode" />
+                  <InputText @bind-Value="Item.Episode" name="episode" class="custom-input md:max-w-32" placeholder="Episode" />
                 </div>
               }
               @if (ShowFieldVolume)
               {
                 <div class="flex flex-col gap-1">
                   <label for="volume" class="text-sm md:text-base">Volume</label>
-                  <InputText @bind-Value="Item.Data.Volume" name="volume" class="custom-input md:max-w-32" placeholder="Volume" />
+                  <InputText @bind-Value="Item.Volume" name="volume" class="custom-input md:max-w-32" placeholder="Volume" />
                 </div>
               }
               @if (ShowFieldChapter)
               {
                 <div class="flex flex-col gap-1">
                   <label for="chapter" class="text-sm md:text-base">Chapter</label>
-                  <InputText @bind-Value="Item.Data.Chapter" name="chapter" class="custom-input md:max-w-32"
-                    placeholder="Chapter" />
+                  <InputText @bind-Value="Item.Chapter" name="chapter" class="custom-input md:max-w-32" placeholder="Chapter" />
                 </div>
               }
             </div>
@@ -114,7 +118,7 @@
             }
           }
         }
-        <div class="flex justify-end items-center p-1 md:p-2 gap-2 md:gap-3 w-full md:w-auto">
+        <div class="flex justify-end items-center gap-2 md:gap-3 w-full md:w-auto">
           @if (Editing)
           {
             <button @onclick="ToggleEditing">
@@ -153,6 +157,7 @@
   [Parameter] public KeepItem? Item { get; set; }
 
   [Parameter] public EventCallback Delete { get; set; }
+  [Parameter] public EventCallback Update { get; set; }
 
   private bool ShowMenu = false;
   private bool Editing = false;
@@ -190,6 +195,7 @@
     if (!Editing)
     {
       ShowMenu = false;
+      Update.InvokeAsync();
     }
   }
 
