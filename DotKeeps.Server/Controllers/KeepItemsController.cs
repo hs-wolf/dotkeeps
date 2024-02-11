@@ -31,8 +31,11 @@ public class KeepItemsController(AppDbContext context) : ControllerBase
   [HttpPost]
   public async Task<ActionResult<KeepItem>> PostKeepItem(KeepItem keepItem)
   {
-    keepItem.CreationDate = DateTime.Now;
-    keepItem.LastUpdateDate = DateTime.Now;
+    string NewId = Guid.NewGuid().ToString();
+    DateTime CurrentDate = DateTime.Now;
+    keepItem.Id = NewId;
+    keepItem.CreatedAt = CurrentDate;
+    keepItem.UpdatedAt = CurrentDate;
     _context.KeepItems.Add(keepItem);
     await _context.SaveChangesAsync();
     return CreatedAtAction("GetKeepItem", new { id = keepItem.Id }, keepItem);
