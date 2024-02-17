@@ -6,96 +6,16 @@
 <PageTitle>DotKeeps Home</PageTitle>
 
 <div class="flex flex-col gap-3 md:gap-6 p-3 md:p-6">
-  @if (LoadingItems)
-  {
-    <h1 class="p-2 md:p-3 bg-neutral-300 rounded-sm md:text-lg animate-pulse">Loading items...</h1>
-  }
-  else
-  {
-    <div class="flex justify-between gap-3 md:gap-6">
-      <CustomButton Label="+ New Item" Theme="action" Action="CreateItem" />
-      <div class="hidden xl:grid grid-cols-2 items-center gap-2 md:gap-3">
-        <button @onclick="() => ChangeListDisplay(false)" class="@(ListDisplay ? "" : "text-blue-600")">
-          <SvgIcon Data="@IconsData.ItemsList" class="text-2xl" />
-        </button>
-        <button @onclick="() => ChangeListDisplay(true)" class="@(ListDisplay ? "text-blue-600" : "")">
-          <SvgIcon Data="@IconsData.ItemsGrid" class="text-2xl" />
-        </button>
-      </div>
-    </div>
-
-    @if (KeepItems.Count <= 0)
-    {
-      <h1 class="md:text-lg">No Items yet.</h1>
-    }
-    else
-    {
-      <ul class="@(ListDisplay ? "grid xl:grid-cols-2" : "flex flex-col") gap-3 md:gap-4">
-        @foreach (var (item, index) in KeepItems.Select((value, i) => (value, i)))
-        {
-          <KeepItemMenu Item="item" Delete="() => DeleteItem(index)" Update="() => UpdateItem(index)" />
-        }
-      </ul>
-    }
-  }
+  <h1 class="text-xl md:text-2xl font-bold">Welcome to DotKeeps!</h1>
+  <div class="flex flex-col gap-3 md:gap-6 w-full max-w-[1024px] text-lg md:text-xl">
+    <p>DotKeeps is an app that helps you save and manage where you stopped at a certain media, like series seasons,
+      comics volumes, or manga chapters. No more hundreds of open tabs, everything is in one place.</p>
+    <p>The project is free and open source, no data is sold to any third parties.</p>
+    <p>The app will go through updates now and then, feel free to contribute <a
+        href="https://github.com/hs-wolf/dotkeeps" class="text-blue-600">in the repository</a>.</p>
+    <p>If by any chance the project comes to and end, registered users will be able to download their data.</p>
+    <p class="font-bold">To start, go to the <NavLink href="following" class="text-blue-600">Following</NavLink> page
+      and start adding stuff!
+    </p>
+  </div>
 </div>
-
-@code {
-  private List<KeepItem> KeepItems = [];
-
-  private bool LoadingItems = true;
-  private bool ListDisplay = false;
-
-  private async Task CreateItem()
-  {
-    var data = KeepItem.New(KeepItemType.NONE, "New");
-
-    var response = await HttpClient.PostAsJsonAsync("http://192.168.15.7:5052/api/keep-items", data);
-
-    if (response.IsSuccessStatusCode)
-    {
-      var responseContent = await response.Content.ReadFromJsonAsync<KeepItem>();
-      if (responseContent != null)
-      {
-        KeepItems.Insert(0, responseContent);
-      }
-    }
-  }
-
-  private async Task UpdateItem(int index)
-  {
-    var response = await
-    HttpClient.PutAsJsonAsync<KeepItem>($"http://192.168.15.7:5052/api/keep-items/{KeepItems[index].Id}", KeepItems[index]);
-  }
-
-  private async Task DeleteItem(int index)
-  {
-    var response = await HttpClient.DeleteAsync($"http://192.168.15.7:5052/api/keep-items/{KeepItems[index].Id}");
-    if (response.IsSuccessStatusCode)
-    {
-      KeepItems.RemoveAt(index);
-    }
-  }
-
-  private void ChangeListDisplay(bool value)
-  {
-    ListDisplay = value;
-  }
-
-  protected override async Task OnInitializedAsync()
-  {
-    try
-    {
-      LoadingItems = true;
-      var response = await HttpClient.GetFromJsonAsync<KeepItem[]>("http://192.168.15.7:5052/api/keep-items");
-      if (response != null)
-      {
-        KeepItems = response.ToList();
-      }
-    }
-    finally
-    {
-      LoadingItems = false;
-    }
-  }
-}

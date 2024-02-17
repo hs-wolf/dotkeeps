@@ -1,0 +1,62 @@
+﻿@using DotKeeps.Shared
+@implements IDisposable
+@page "/register"
+
+<PageTitle>DotKeeps Register</PageTitle>
+
+<div class="flex flex-col gap-3 md:gap-6 p-3 md:p-6">
+  <h1 class="text-xl md:text-2xl font-bold">Register</h1>
+  <EditForm EditContext=editContext OnValidSubmit=HandleValidSubmit
+    class="flex flex-col gap-3 md:gap-6 max-w-[512px] p-3 md:p-6 bg-neutral-200 rounded-b-sm">
+    <DataAnnotationsValidator />
+    <div class="grid grid-cols-[min-content_1fr] gap-3 md:gap-6">
+      <label for="Email" class="flex items-center h-8 md:h-10">Email:</label>
+      <div class="flex flex-col gap-1">
+        <InputText id="Email" @bind-Value="Model.Email" class="custom-input" />
+        <ValidationMessage For="@(() => Model.Email)" class="text-sm text-red-600" />
+      </div>
+      <label for="Password" class="flex items-center h-8 md:h-10">Password:</label>
+      <div class="flex flex-col gap-1">
+        <InputText id="Password" @bind-Value="Model.Password" class="custom-input" />
+        <ValidationMessage For="@(() => Model.Password)" class="text-sm text-red-600" />
+      </div>
+      <label for="Confirm" class="flex items-center h-8 md:h-10">Confirm:</label>
+      <div class="flex flex-col gap-1">
+        <InputText id="Confirm" @bind-Value="Model.Confirm" class="custom-input" />
+        <ValidationMessage For="@(() => Model.Confirm)" class="text-sm text-red-600" />
+      </div>
+    </div>
+    <CustomButton Type="submit" Label="Register" Theme="action" />
+  </EditForm>
+</div>
+
+@code {
+
+  private UserRegister Model = new("", "", "");
+  private bool isSubmitting;
+  private bool isError = false;
+  private string ConfirmPassword = String.Empty;
+  private EditContext editContext;
+
+  private async Task HandleValidSubmit()
+  {
+    Console.WriteLine($"Login: Email: {Model.Email}, Password: {Model.Password}, Confirm: {Model.Confirm}");
+  }
+
+  private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+  {
+    isError = !editContext.Validate();
+    StateHasChanged();
+  }
+
+  protected override void OnInitialized()
+  {
+    editContext = new(Model);
+    editContext.OnFieldChanged += HandleFieldChanged;
+  }
+
+  public void Dispose()
+  {
+    editContext.OnFieldChanged -= HandleFieldChanged;
+  }
+}
